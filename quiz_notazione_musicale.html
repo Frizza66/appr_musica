@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Nascita della Notazione Musicale - Quiz Interattivo</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --container-bg: #16213e;
+            --text-color: #e9ecef;
+            --accent-color: #4ecca3;
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+            --footer-bg: #0f3460;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Ottimizzazione DSA: Font sans-serif, spaziatura maggiore, contrasto non eccessivo */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        #main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--container-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 700px;
+            width: 100%;
+            display: none; /* Nascosto inizialmente */
+        }
+
+        h1 { color: var(--accent-color); margin-bottom: 1.5rem; }
+
+        .progress-bar {
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #8892b0;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #0f3460;
+            border: 2px solid #4ecca344;
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-family: inherit;
+        }
+
+        .option-btn:hover {
+            background-color: #1a1a2e;
+            border-color: var(--accent-color);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-color) !important;
+            border-color: var(--correct-color);
+            color: white;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-color) !important;
+            border-color: var(--wrong-color);
+            color: white;
+        }
+
+        #next-btn {
+            margin-top: 25px;
+            background-color: var(--accent-color);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            font-size: 1rem;
+        }
+
+        /* Risultati */
+        #result-screen { display: none; }
+        .score-box { font-size: 3rem; font-weight: bold; color: var(--accent-color); margin: 20px 0; }
+        .score-desc { font-style: italic; color: #8892b0; margin-bottom: 20px; }
+
+        /* Footer e Sezioni */
+        footer {
+            background-color: var(--footer-bg);
+            padding: 15px;
+            font-size: 0.8rem;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .info-section {
+            display: none;
+            max-width: 700px;
+            margin: 20px auto;
+            text-align: left;
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Cookie Banner */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-top: 3px solid var(--accent-color);
+        }
+
+        .cookie-btns button {
+            padding: 8px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .btn-accept { background: var(--correct-color); color: white; }
+        .btn-reject { background: var(--wrong-color); color: white; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            #cookie-banner { flex-direction: column; text-align: center; }
+            .cookie-btns { margin-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-container">
+        <!-- Schermata Quiz -->
+        <div id="quiz-container" class="card">
+            <div class="progress-bar" id="progress">Domanda 1 di 12</div>
+            <div class="question-text" id="question">Caricamento domanda...</div>
+            <div class="options-container" id="options">
+                <!-- Opzioni caricate da JS -->
+            </div>
+            <button id="next-btn" onclick="nextQuestion()">Prossima Domanda</button>
+        </div>
+
+        <!-- Schermata Risultati -->
+        <div id="result-screen" class="card">
+            <h1>Risultato Finale</h1>
+            <div class="score-box" id="score-percent">0%</div>
+            <h2 id="spartito-titolo">Spartito</h2>
+            <p id="motivational-quote"></p>
+            <p id="spartito-desc" style="line-height: 1.8; margin-top: 20px;"></p>
+            <button onclick="location.reload()" style="background:none; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 10px; cursor: pointer; border-radius: 5px; margin-top: 20px;">Riprova il Quiz</button>
+        </div>
+
+        <!-- Sezione Credits -->
+        <div id="credits-section" class="info-section">
+            <h2>Credits</h2>
+            <p>Questo quiz è stato ideato dalla <strong>professoressa Angela Frizzarin</strong> per i suoi studenti della scuola secondaria di primo grado. È uno strumento senza scopo di lucro, creato unicamente per fini didattici.</p>
+            <button onclick="closeInfo()" style="color: var(--accent-color); background: none; border: none; cursor: pointer;">Chiudi</button>
+        </div>
+
+        <!-- Sezione Privacy -->
+        <div id="privacy-section" class="info-section">
+            <h2>Privacy & Cookie Policy</h2>
+            <p>Analisi del servizio:</p>
+            <ul>
+                <li><strong>Dati personali:</strong> Questo sito non raccoglie, memorizza o trasmette dati personali degli utenti.</li>
+                <li><strong>Cookie:</strong> Il sito utilizza esclusivamente cookie tecnici necessari al funzionamento (gestione del consenso). Non vengono utilizzati cookie di profilazione.</li>
+                <li><strong>Terze parti:</strong> Il sito è ospitato su piattaforme web (es. GitHub Pages o similari) che potrebbero raccogliere log di sistema standard. Non sono inclusi font esterni o script di tracciamento esterni.</li>
+            </ul>
+            <button onclick="closeInfo()" style="color: var(--accent-color); background: none; border: none; cursor: pointer;">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- Cookie Banner -->
+    <div id="cookie-banner">
+        <div>Questo sito usa cookie tecnici per funzionare. Cliccando "Accetta" acconsente al loro uso per la durata della sessione.</div>
+        <div class="cookie-btns">
+            <button class="btn-reject" onclick="handleCookie(false)">Rifiuta</button>
+            <button class="btn-accept" onclick="handleCookie(true)">Accetta</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 - Didattica Musicale | <a href="#" onclick="showInfo('credits')">Credits</a> | <a href="#" onclick="showInfo('privacy')">Privacy Policy</a></p>
+    </footer>
+
+    <script>
+        // DATI DEL QUIZ
+        const quizData = [
+            // LIVELLO BASE (1-4)
+            {
+                q: "Chi è considerato il 'padre' della moderna notazione musicale grazie all'invenzione del tetragramma?",
+                a: ["Guido d'Arezzo", "Papa Gregorio Magno", "Johann Sebastian Bach", "Pitagora"],
+                correct: 0
+            },
+            {
+                q: "In quale epoca storica inizia a svilupparsi la notazione neumatica?",
+                a: ["Rinascimento", "Alto Medioevo", "Antica Grecia", "Barocco"],
+                correct: 1
+            },
+            {
+                q: "Cosa indicavano i primi 'neumi' sopra i testi sacri?",
+                a: ["La durata esatta delle note", "Il volume del suono", "L'andamento della melodia", "Lo strumento da usare"],
+                correct: 2
+            },
+            {
+                q: "Qual è il nome del sistema di quattro linee usato prima dell'attuale pentagramma?",
+                a: ["Quadrogramma", "Tetragramma", "Lineogramma", "Monogramma"],
+                correct: 1
+            },
+            // LIVELLO INTERMEDIO (5-8)
+            {
+                q: "Perché nacque l'esigenza di scrivere la musica invece di tramandarla oralmente?",
+                a: ["Per vendere gli spartiti", "Per unificare il rito religioso in tutto l'Impero", "Perché i cantori perdevano la memoria", "Per inventare nuovi strumenti"],
+                correct: 1
+            },
+            {
+                q: "Cosa rappresentava la 'Mano Guidoniana'?",
+                a: ["Un metodo per misurare il ritmo", "Uno strumento a percussione", "Un sistema mnemonico per imparare le note", "Una tecnica per suonare l'arpa"],
+                correct: 2
+            },
+            {
+                q: "Quale fu il limite principale della prima notazione 'adiastematica'?",
+                a: ["Non indicava l'altezza precisa dei suoni", "Era troppo colorata", "Si scriveva solo su pietra", "Non aveva testo"],
+                correct: 0
+            },
+            {
+                q: "Le sillabe Ut-Re-Mi-Fa-Sol-La derivano da:",
+                a: ["Un sogno di Guido d'Arezzo", "Le prime sillabe di un inno a San Giovanni", "I nomi delle costellazioni", "Nomi di antichi re franchi"],
+                correct: 1
+            },
+            // LIVELLO AVANZATO (9-12)
+            {
+                q: "Qual è il rapporto tra la nascita della polifonia e l'evoluzione della scrittura musicale?",
+                a: ["Nessun rapporto", "La polifonia rese indispensabile una notazione ritmica precisa", "La polifonia semplificò la scrittura", "La scrittura sparì con la polifonia"],
+                correct: 1
+            },
+            {
+                q: "Nella notazione mensurale del XIII secolo, cosa determinava la durata di una nota?",
+                a: ["Il colore dell'inchiostro", "La forma della nota stessa", "La velocità del direttore", "L'altezza della riga"],
+                correct: 1
+            },
+            {
+                q: "Cosa si intende per 'notazione alfabetica'?",
+                a: ["L'uso delle lettere A-G, tipico ancora oggi del mondo anglosassone", "Scrivere il nome della nota per intero", "Un sistema usato solo per i tamburi", "La scrittura dei testi delle canzoni"],
+                correct: 0
+            },
+            {
+                q: "Quale di questi eventi segnò il passaggio definitivo al pentagramma moderno?",
+                a: ["L'invenzione della stampa musicale", "La fine del Medioevo", "L'ordine del Papa", "La scoperta dell'America"],
+                correct: 0
+            }
+        ];
+
+        // CONFIGURAZIONE RISULTATI
+        const resultsMap = [
+            {
+                min: 0, max: 30, 
+                titolo: "Frammento di Papiro Musico", 
+                frase: "Sei all'inizio del viaggio: ogni grande melodia inizia con una singola nota.",
+                desc: "Questo spartito rappresenta l'antichità, quando la musica era quasi solo memoria. Sei al livello delle prime sperimentazioni greche, dove la scrittura era un mistero per pochi."
+            },
+            {
+                min: 31, max: 60, 
+                titolo: "Codice Neumatico", 
+                frase: "La tua conoscenza prende forma: come i neumi, inizi a tracciare la via.",
+                desc: "Associato al livello intermedio, il codice neumatico indica una comprensione delle linee guida della musica. Hai capito le basi dell'unificazione gregoriana."
+            },
+            {
+                min: 61, max: 85, 
+                titolo: "Antifonario di Guido d'Arezzo", 
+                frase: "Splendido progresso! La tua mente è un tetragramma pronto per la polifonia.",
+                desc: "Questo livello indica una padronanza delle riforme medievali. Comprendi l'importanza della precisione e del sistema che ha reso possibile la musica moderna."
+            },
+            {
+                min: 86, max: 100, 
+                titolo: "Partitura d'Opera Barocca", 
+                frase: "Maestro! Hai raggiunto la vetta della conoscenza musicale.",
+                desc: "Rappresenta la massima complessità e bellezza. Sei in grado di analizzare i rapporti causa-effetto che hanno portato dalla preghiera cantata al grande Melodramma."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        // GESTIONE COOKIE
+        function handleCookie(accepted) {
+            document.getElementById('cookie-banner').style.display = 'none';
+            if (accepted) {
+                document.getElementById('quiz-container').style.display = 'block';
+                loadQuestion();
+            }
+        }
+
+        // NAVIGAZIONE INFO
+        function showInfo(type) {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('credits-section').style.display = (type === 'credits') ? 'block' : 'none';
+            document.getElementById('privacy-section').style.display = (type === 'privacy') ? 'block' : 'none';
+        }
+
+        function closeInfo() {
+            document.querySelectorAll('.info-section').forEach(s => s.style.display = 'none');
+            // Torna al quiz se non finito, altrimenti ai risultati
+            if(currentQuestion < quizData.length && !document.getElementById('result-screen').style.display === 'block') {
+                document.getElementById('quiz-container').style.display = 'block';
+            } else if (currentQuestion >= quizData.length) {
+                document.getElementById('result-screen').style.display = 'block';
+            } else {
+                 document.getElementById('quiz-container').style.display = 'block';
+            }
+        }
+
+        // LOGICA QUIZ
+        function loadQuestion() {
+            answered = false;
+            const q = quizData[currentQuestion];
+            document.getElementById('progress').innerText = `Domanda ${currentQuestion + 1} di ${quizData.length}`;
+            document.getElementById('question').innerText = q.q;
+            document.getElementById('next-btn').style.display = 'none';
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            q.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(index, btn) {
+            if (answered) return;
+            answered = true;
+            
+            const correctIndex = quizData[currentQuestion].correct;
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            if (index === correctIndex) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                buttons[correctIndex].classList.add('correct');
+            }
+            
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.style.display = 'block';
+            
+            const percent = Math.round((score / quizData.length) * 100);
+            document.getElementById('score-percent').innerText = `${percent}%`;
+            
+            const mapping = resultsMap.find(m => percent >= m.min && percent <= m.max);
+            
+            document.getElementById('spartito-titolo').innerText = mapping.titolo;
+            document.getElementById('motivational-quote').innerText = mapping.frase;
+            document.getElementById('spartito-desc').innerText = mapping.desc;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: La Musica Medioevale</title>
+    <style>
+        /* Variabili di colore e stile per accessibilità (DSA friendly) */
+        :root {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #f0f0f0;
+            --accent-color: #e67e22;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --line-height: 1.6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: var(--line-height);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Layout Principale */
+        #main-container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--container-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; /* Nascosto all'avvio */
+            text-align: center;
+        }
+
+        h1 { color: var(--accent-color); font-weight: 700; letter-spacing: 1px; }
+
+        #progress-bar {
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+            color: #bdc3c7;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px; /* Migliora leggibilità DSA */
+        }
+
+        /* Pulsanti Risposta */
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background-color: #3d3d3d;
+            border: 2px solid #555;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .option-btn:hover { background-color: #4d4d4d; border-color: var(--accent-color); }
+        .correct { background-color: var(--success-color) !important; border-color: #fff; }
+        .wrong { background-color: var(--error-color) !important; border-color: #fff; }
+
+        #next-btn {
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Cookie Banner */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            border-top: 3px solid var(--accent-color);
+        }
+
+        #cookie-banner button {
+            padding: 8px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+        }
+        
+        #btn-accept { background-color: var(--success-color); color: white; }
+        #btn-reject { background-color: var(--error-color); color: white; }
+
+        /* Risultati e Canvas */
+        #result-container { display: none; }
+        canvas { 
+            max-width: 100%; 
+            height: auto; 
+            margin: 20px 0; 
+            border: 1px solid #555;
+            background: #fff;
+        }
+
+        /* Footer e Sezioni */
+        footer { margin-top: auto; padding: 20px; font-size: 0.9rem; }
+        footer a { color: var(--accent-color); margin: 0 10px; text-decoration: none; cursor: pointer; }
+        .info-section { display: none; padding: 2rem; max-width: 800px; }
+        .show { display: block !important; }
+
+    </style>
+</head>
+<body>
+
+    <div id="cookie-banner">
+        <p>Questo sito usa cookie tecnici per funzionare. Cliccando 'accetta' acconsente al loro uso.</p>
+        <div>
+            <button id="btn-accept">Accetta</button>
+            <button id="btn-reject">Rifiuta</button>
+        </div>
+    </div>
+
+    <div id="main-container">
+        <div id="quiz-ui">
+            <div id="progress-bar">Domanda 1 di 12</div>
+            <div id="question" class="question-text">Caricamento...</div>
+            <div id="options" class="options-container"></div>
+            <button id="next-btn">Prossima Domanda</button>
+        </div>
+
+        <div id="result-container">
+            <h2>Risultato Finale</h2>
+            <p id="score-percent" style="font-size: 2rem;"></p>
+            <canvas id="score-canvas" width="600" height="200"></canvas>
+            <h3 id="sheet-title"></h3>
+            <p id="motivation-quote" style="font-style: italic; color: var(--accent-color);"></p>
+            <p id="sheet-desc"></p>
+            <button onclick="location.reload()" id="next-btn" style="display:inline-block">Ricomincia</button>
+        </div>
+    </div>
+
+    <div id="credits-section" class="info-section">
+        <h2>Credits</h2>
+        <p>Questo quiz è stato ideato dalla <strong>professoressa Angela Frizzarin</strong> per i suoi studenti della scuola secondaria di primo grado. È uno strumento senza scopo di lucro, creato unicamente per fini didattici.</p>
+        <button onclick="toggleSection('credits-section')">Chiudi</button>
+    </div>
+
+    <div id="privacy-section" class="info-section">
+        <h2>Privacy & Cookie Policy</h2>
+        <p>Questo sito non raccoglie dati personali dell'utente (nomi, email o tracciamento comportamentale). Non vengono utilizzati cookie di profilazione.</p>
+        <p>Tuttavia, poiché il sito è ospitato su piattaforme di hosting (come GitHub Pages o simili), il fornitore di servizi potrebbe utilizzare <strong>cookie tecnici</strong> necessari alla trasmissione della pagina web e alla sicurezza del server. Per maggiori informazioni sui cookie di sistema, consultare la policy del fornitore di hosting utilizzato.</p>
+        <button onclick="toggleSection('privacy-section')">Chiudi</button>
+    </div>
+
+    <footer>
+        <a onclick="toggleSection('credits-section')">Credits</a> | 
+        <a onclick="toggleSection('privacy-section')">Privacy Policy</a>
+    </footer>
+
+    <script>
+        const quizData = [
+            // BASE (1-4)
+            { q: "Quale di questi è il canto principale della liturgia cattolica medievale?", a: ["Canto Gregoriano", "Opera Lirica", "Jazz", "Madrigale"], correct: 0 },
+            { q: "In quale periodo collochiamo convenzionalmente il Medioevo?", a: ["1800-1900", "476 d.C. - 1492 d.C.", "1000 a.C.", "Epoca Romana"], correct: 1 },
+            { q: "Chi era Guido d'Arezzo?", a: ["Un re", "Un monaco e teorico musicale", "Un pittore", "Un trovatore"], correct: 1 },
+            { q: "Qual era il supporto principale su cui si scriveva la musica?", a: ["Carta chimica", "Hard disk", "Pergamena", "Legno"], correct: 2 },
+            // INTERMEDIO (5-8)
+            { q: "Perché nacque la scrittura neumatica?", a: ["Per decorare i libri", "Per aiutare la memoria dei monaci", "Per nascondere messaggi segreti", "Per vendere spartiti"], correct: 1 },
+            { q: "Chi erano i Trovatori?", a: ["Costruttori di organi", "Poeti-musicisti nobili del sud della Francia", "Monaci amanuensi", "Soldati in pensione"], correct: 1 },
+            { q: "Cosa si intende per 'Polifonia'?", a: ["Un solo strumento", "Più suoni o voci indipendenti eseguiti insieme", "Musica senza ritmo", "Un canto a voce sola"], correct: 1 },
+            { q: "Qual è la differenza tra musica sacra e profana?", a: ["Nessuna", "La sacra è per la chiesa, la profana per il divertimento laico", "La sacra è solo strumentale", "La profana è cantata in latino"], correct: 1 },
+            // AVANZATO (9-12)
+            { q: "Cos'è la 'Mano Guidoniana'?", a: ["Uno strumento a corde", "Un sistema mnemonico per l'apprendimento delle note", "Un tipo di danza", "Una tecnica per suonare l'arpa"], correct: 1 },
+            { q: "Quale innovazione caratterizza l'Ars Nova nel XIV secolo?", a: ["L'uso del pianoforte", "Una maggiore complessità ritmica e notazione precisa", "L'abolizione del canto", "Il ritorno al canto monodico"], correct: 1 },
+            { q: "Il rapporto tra testo e musica nel Melodramma affonda le radici in quale idea medievale?", a: ["L'assenza di testo", "Il potere della parola di muovere gli affetti", "La ripetizione ossessiva", "L'uso esclusivo dei tamburi"], correct: 1 },
+            { q: "Perché il sistema di Guido d'Arezzo rivoluzionò la storia della musica?", a: ["Inventò il rock", "Permise di cantare brani mai sentiti prima leggendo i segni", "Introdusse il violino", "Eliminò il latino dalla musica"], correct: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const mainContainer = document.getElementById('main-container');
+        const cookieBanner = document.getElementById('cookie-banner');
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const nextBtn = document.getElementById('next-btn');
+        const progressEl = document.getElementById('progress-bar');
+
+        // Gestione Cookie Banner
+        document.getElementById('btn-accept').onclick = () => {
+            cookieBanner.style.display = 'none';
+            mainContainer.classList.add('show');
+            loadQuestion();
+        };
+
+        document.getElementById('btn-reject').onclick = () => {
+            alert("Senza accettare i cookie tecnici non è possibile procedere con il quiz.");
+            cookieBanner.style.display = 'none';
+        };
+
+        function loadQuestion() {
+            nextBtn.style.display = 'none';
+            const q = quizData[currentQuestion];
+            progressEl.innerText = `Domanda ${currentQuestion + 1} di ${quizData.length}`;
+            questionEl.innerText = q.q;
+            optionsEl.innerHTML = '';
+
+            q.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = opt;
+                btn.classList.add('option-btn');
+                btn.onclick = () => selectOption(index, btn);
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function selectOption(index, btn) {
+            const correct = quizData[currentQuestion].correct;
+            const allBtns = document.querySelectorAll('.option-btn');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if(index === correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[correct].classList.add('correct');
+            }
+            nextBtn.style.display = 'inline-block';
+        }
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if(currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            document.getElementById('quiz-ui').style.display = 'none';
+            const resContainer = document.getElementById('result-container');
+            resContainer.style.display = 'block';
+
+            const percent = Math.round((score / quizData.length) * 100);
+            document.getElementById('score-percent').innerText = `${percent}%`;
+
+            let resultData = {};
+            if(percent < 40) {
+                resultData = {
+                    title: "Spartito: Frammento di Neumi",
+                    quote: "Ogni lungo viaggio comincia con un singolo passo (o nota).",
+                    desc: "Associato a questo livello perché rappresenta l'alba della scrittura musicale. Proprio come i primi neumi erano incerti, il tuo percorso nel Melodramma è appena iniziato: serve più studio per decifrare la complessità delle grandi opere.",
+                    color: "#c0392b"
+                };
+            } else if(percent < 80) {
+                resultData = {
+                    title: "Spartito: Tetragramma di Guido d'Arezzo",
+                    quote: "La melodia sta prendendo forma nella tua mente.",
+                    desc: "Il tetragramma ha dato ordine al caos. Sei a un livello intermedio: comprendi le strutture portanti della storia musicale. Il Melodramma non è più un mistero, ma una partitura che inizi a leggere con consapevolezza.",
+                    color: "#e67e22"
+                };
+            } else {
+                resultData = {
+                    title: "Spartito: Codice dell'Ars Nova",
+                    quote: "Maestro della polifonia e della conoscenza!",
+                    desc: "L'Ars Nova rappresenta la massima raffinatezza medievale. Questo punteggio eccellente dimostra che hai compreso le radici profonde che collegano il Medioevo alla nascita del Melodramma e della musica moderna.",
+                    color: "#27ae60"
+                };
+            }
+
+            document.getElementById('sheet-title').innerText = resultData.title;
+            document.getElementById('motivation-quote').innerText = resultData.quote;
+            document.getElementById('sheet-desc').innerText = resultData.desc;
+            drawCanvas(resultData.color);
+        }
+
+        function drawCanvas(color) {
+            const canvas = document.getElementById('score-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Disegno un pentagramma stilizzato
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 2;
+            for(let i=0; i<5; i++) {
+                ctx.beginPath();
+                ctx.moveTo(50, 50 + (i*25));
+                ctx.lineTo(550, 50 + (i*25));
+                ctx.stroke();
+            }
+
+            // Disegno una "nota" stilizzata colorata
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(300, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(325, 50, 5, 100);
+            
+            ctx.font = "20px Georgia";
+            ctx.fillStyle = "#333";
+            ctx.fillText("Certificato di Competenza Musicale", 150, 30);
+        }
+
+        function toggleSection(id) {
+            const sec = document.getElementById(id);
+            sec.classList.toggle('show');
+            if(sec.classList.contains('show')) {
+                mainContainer.style.display = 'none';
+            } else {
+                if(cookieBanner.style.display === 'none') mainContainer.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Melodramma: Quiz Didattico</title>
+    <!-- Utilizzo di un font di sistema sans-serif ad alta leggibilità per DSA -->
+    <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #d4af37; /* Oro per richiamare il teatro */
+            --correct-color: #2e7d32;
+            --wrong-color: #c62828;
+            --button-hover: #333333;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Accessibilità DSA: Spaziatura maggiore tra le righe e i paragrafi */
+        p, h1, h2 {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        #app-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: none; /* Nascosto inizialmente */
+        }
+
+        .card {
+            background-color: var(--container-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+
+        .progress-container {
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            letter-spacing: 0.03rem;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-btn {
+            background-color: #2a2a2a;
+            color: white;
+            border: 2px solid #444;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-align: center; /* Centrato */
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--button-hover);
+            border-color: var(--accent-color);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-color) !important;
+            border-color: #fff;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-color) !important;
+            border-color: #fff;
+        }
+
+        .nav-btn {
+            background-color: var(--accent-color);
+            color: black;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        /* Risultati Finali */
+        #results-container {
+            display: none;
+            text-align: center;
+        }
+
+        .score-box {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin: 1rem 0;
+        }
+
+        .score-description {
+            font-style: italic;
+            margin-top: 1rem;
+            color: #bbb;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            width: 100%;
+            border-top: 1px solid #333;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            margin: 0 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Sezioni Legali */
+        .legal-section {
+            display: none;
+            max-width: 800px;
+            padding: 2rem;
+            background: var(--container-bg);
+            border-radius: 12px;
+            margin: 20px;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            background: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+
+        /* Cookie Banner */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #222;
+            padding: 20px;
+            border-top: 3px solid var(--accent-color);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+        }
+
+        .banner-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .banner-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-accept { background-color: var(--correct-color); color: white; }
+        .btn-reject { background-color: var(--wrong-color); color: white; }
+
+        @media (max-width: 600px) {
+            .question-text { font-size: 1.1rem; }
+            .option-btn { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COOKIE BANNER -->
+    <div id="cookie-banner">
+        <p>Questo sito utilizza solo cookie tecnici necessari al corretto funzionamento dell'applicativo didattico. Cliccando "Accetta" acconsenti al loro uso per sbloccare il quiz.</p>
+        <div class="banner-buttons">
+            <button class="banner-btn btn-accept" onclick="handleCookie(true)">Accetta</button>
+            <button class="banner-btn btn-reject" onclick="handleCookie(false)">Rifiuta</button>
+        </div>
+    </div>
+
+    <!-- QUIZ CONTAINER -->
+    <div id="app-container">
+        <div id="quiz-card" class="card">
+            <div class="progress-container">Domanda <span id="current-q">1</span> di 12</div>
+            <div id="question" class="question-text">Caricamento domanda...</div>
+            <div id="options" class="options-grid"></div>
+            <button id="next-btn" class="nav-btn" onclick="loadNextQuestion()">Prossima Domanda</button>
+        </div>
+
+        <div id="results-container" class="card">
+            <h2>Percorso Concluso!</h2>
+            <div class="score-box"><span id="final-percentage">0</span>%</div>
+            <h3 id="score-title" style="color: var(--accent-color);"></h3>
+            <p id="score-phrase" style="font-weight: bold; margin-top: 10px;"></p>
+            <p id="score-description" class="score-description"></p>
+            <button class="nav-btn" style="display: block; margin-top: 20px;" onclick="location.reload()">Riprova il Quiz</button>
+        </div>
+    </div>
+
+    <!-- LEGAL SECTIONS -->
+    <div id="credits-section" class="legal-section">
+        <h2>Credits</h2>
+        <p>Questo quiz è stato ideato dalla professoressa Angela Frizzarin per i suoi studenti della scuola secondaria di primo grado. È uno strumento senza scopo di lucro, creato unicamente per fini didattici.</p>
+        <button class="back-btn" onclick="showView('app-container')">Torna al Quiz</button>
+    </div>
+
+    <div id="privacy-section" class="legal-section">
+        <h2>Privacy & Cookie Policy</h2>
+        <p>In conformità alle normative vigenti, si informa che questo applicativo:</p>
+        <ul style="text-align: left; list-style: inside; margin: 10px 0;">
+            <li>Non raccoglie né memorizza dati personali degli utenti.</li>
+            <li>Utilizza cookie tecnici minimi (stato dell'accettazione) memorizzati nel browser dell'utente.</li>
+            <li>Il sito è ospitato su piattaforme di hosting (come Pagedrops o simili) che potrebbero registrare log server tecnici per la sicurezza.</li>
+            <li>Non vengono utilizzati font esterni che tracciano l'utente; i font utilizzati sono quelli di sistema.</li>
+        </ul>
+        <button class="back-btn" onclick="showView('app-container')">Torna al Quiz</button>
+    </div>
+
+    <footer>
+        <a onclick="showView('credits-section')">Credits</a> | 
+        <a onclick="showView('privacy-section')">Privacy Policy</a>
+    </footer>
+
+    <script>
+        // DATI DEL QUIZ
+        const questions = [
+            // Livello BASE (1-4)
+            {
+                q: "In quale città italiana è nato il Melodramma tra la fine del '500 e l'inizio del '600?",
+                options: ["Venezia", "Roma", "Firenze", "Milano"],
+                correct: 2
+            },
+            {
+                q: "Chi è considerato l'autore della prima opera giunta fino a noi, 'Euridice' (1600)?",
+                options: ["Giuseppe Verdi", "Jacopo Peri", "Giacomo Puccini", "Gioachino Rossini"],
+                correct: 1
+            },
+            {
+                q: "Qual è il nome del gruppo di intellettuali fiorentini che voleva 'far rivivere' la tragedia greca?",
+                options: ["Accademia dei Lincei", "Camerata de' Bardi", "Scuola di Mantova", "I Trovatori"],
+                correct: 1
+            },
+            {
+                q: "Qual è l'opera più famosa di Claudio Monteverdi, fondamentale per il genere?",
+                options: ["L'Orfeo", "Aida", "Carmen", "Norma"],
+                correct: 0
+            },
+            // Livello INTERMEDIO (5-8)
+            {
+                q: "Che cos'è il 'Libretto' in un'opera lirica?",
+                options: ["Un piccolo spartito", "Il testo scritto dell'opera", "Il regolamento del teatro", "L'elenco dei cantanti"],
+                correct: 1
+            },
+            {
+                q: "Qual è la differenza principale tra un 'Recitativo' e un' 'Aria'?",
+                options: ["Non c'è differenza", "L'aria serve a recitare, il recitativo a cantare", "L'aria è il momento lirico del sentimento, il recitativo fa avanzare l'azione", "L'aria è solo strumentale"],
+                correct: 2
+            },
+            {
+                q: "Nella seconda metà del Settecento, chi fu il principale fautore della 'Riforma' del melodramma?",
+                options: ["Wolfgang Amadeus Mozart", "Christoph Willibald Gluck", "Antonio Vivaldi", "Gaetano Donizetti"],
+                correct: 1
+            },
+            {
+                q: "Quale compositore è associato al motto 'Viva V.E.R.D.I.' durante il Risorgimento?",
+                options: ["Vincenzo Bellini", "Gioachino Rossini", "Giuseppe Verdi", "Pietro Mascagni"],
+                correct: 2
+            },
+            // Livello AVANZATO (9-12)
+            {
+                q: "Cosa si intende per 'Opera Buffa'?",
+                options: ["Un'opera senza musica", "Un genere comico con personaggi della vita quotidiana", "Un'opera cantata male di proposito", "Un'opera per soli bambini"],
+                correct: 1
+            },
+            {
+                q: "Quale di questi titoli appartiene alla 'Trilogia Popolare' di Verdi?",
+                options: ["Tosca, Boheme, Turandot", "Rigoletto, Il Trovatore, La Traviata", "Otello, Falstaff, Macbeth", "Don Giovanni, Le nozze di Figaro, Cosi fan tutte"],
+                correct: 1
+            },
+            {
+                q: "Cosa identifica il termine 'Leitmotiv' (motivo conduttore)?",
+                options: ["L'intervallo tra due atti", "Un tema musicale associato a un personaggio o a un'idea", "Il direttore d'orchestra", "Il pubblico che applaude"],
+                correct: 1
+            },
+            {
+                q: "Quale opera di Giacomo Puccini rimase incompiuta alla sua morte e fu completata da Franco Alfano?",
+                options: ["Madama Butterfly", "Tosca", "Turandot", "Manon Lescaut"],
+                correct: 2
+            }
+        ];
+
+        // STATO APPLICAZIONE
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // GESTIONE COOKIE
+        function handleCookie(accepted) {
+            const banner = document.getElementById('cookie-banner');
+            const app = document.getElementById('app-container');
+            
+            // Il banner deve sparire in ogni caso dopo la scelta
+            banner.style.display = 'none';
+
+            if (accepted) {
+                app.style.display = 'block';
+            } else {
+                // Se rifiuta, mostriamo un messaggio di avviso
+                document.body.innerHTML = `
+                    <div class='card' style='text-align:center; max-width:500px;'>
+                        <h2>Accesso Negato</h2>
+                        <p>Senza l'accettazione dei cookie tecnici non è possibile avviare il quiz interattivo.</p>
+                        <button onclick='location.reload()' class='nav-btn' style='display:block'>Ricarica e accetta</button>
+                    </div>`;
+            }
+        }
+
+        // NAVIGAZIONE VISTE
+        function showView(viewId) {
+            // Nascondi tutto
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('credits-section').style.display = 'none';
+            document.getElementById('privacy-section').style.display = 'none';
+            // Mostra richiesta
+            document.getElementById(viewId).style.display = 'block';
+        }
+
+        // LOGICA QUIZ
+        function initQuiz() {
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentQ = questions[currentQuestionIndex];
+            const qElement = document.getElementById('question');
+            const oElement = document.getElementById('options');
+            const progress = document.getElementById('current-q');
+            const nextBtn = document.getElementById('next-btn');
+
+            nextBtn.style.display = 'none';
+            progress.innerText = currentQuestionIndex + 1;
+            qElement.innerText = currentQ.q;
+            oElement.innerHTML = '';
+
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(index, btn);
+                oElement.appendChild(btn);
+            });
+        }
+
+        function selectOption(index, btn) {
+            const currentQ = questions[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            // Disabilita tutti i bottoni dopo la scelta
+            allButtons.forEach(b => b.disabled = true);
+
+            if (index === currentQ.correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                // Mostra quella corretta per feedback
+                allButtons[currentQ.correct].classList.add('correct');
+            }
+
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function loadNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-card').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('final-percentage').innerText = percentage;
+
+            const title = document.getElementById('score-title');
+            const phrase = document.getElementById('score-phrase');
+            const desc = document.getElementById('score-description');
+
+            // Logica feedback basata sulle percentuali e spartiti
+            if (percentage < 30) {
+                title.innerText = "Spartito: 'Euridice' (Bozzetto)";
+                phrase.innerText = "Siamo all'inizio del viaggio! Il sipario sta per alzarsi.";
+                desc.innerText = "Questo spartito rappresenta l'alba del melodramma. Come i pionieri del 1600, hai appena iniziato a scoprire la bellezza dell'opera. Continua a studiare per dare voce alla tua musica!";
+            } else if (percentage < 60) {
+                title.innerText = "Spartito: 'L'Elisir d'Amore'";
+                phrase.innerText = "Un buon ritmo! La tua conoscenza sta crescendo armoniosamente.";
+                desc.innerText = "Donizetti ha creato capolavori accessibili ma profondi. Ti trovi a un livello intermedio: conosci i meccanismi base e i grandi nomi, ma c'è ancora qualche nota da perfezionare per l'ovazione finale.";
+            } else if (percentage < 90) {
+                title.innerText = "Spartito: 'La Traviata'";
+                phrase.innerText = "Eccellente! Sei nel cuore della grande opera italiana.";
+                desc.innerText = "Associare questo punteggio a Verdi significa che padroneggi la complessità del melodramma. Capisci i nessi storici e artistici che hanno reso l'opera il genere più amato del mondo.";
+            } else {
+                title.innerText = "Spartito: 'Turandot'";
+                phrase.innerText = "Vincero! Un trionfo assoluto, sei un vero esperto.";
+                desc.innerText = "Come l'ultima grande opera pucciniana, la tua preparazione è monumentale. Hai analizzato concetti avanzati e curiosità con precisione chirurgica. Il loggione è in piedi per te!";
+            }
+        }
+
+        // Avvio
+        window.onload = () => {
+            initQuiz();
+        };
+    </script>
+</body>
+</html>

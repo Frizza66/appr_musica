@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il direttore è scomparso - Libro Game</title>
+    <style>
+        /* CSS BASE RESPONSIVE */
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: #f5f5dc; /* Beige */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .scene {
+            display: none;
+        }
+
+        .scene.active {
+            display: block;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-placeholder img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+
+        /* STILE PULSANTI */
+        button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        button:hover {
+            background-color: #34495e;
+            transform: scale(1.05);
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 80%;
+            margin-bottom: 15px;
+        }
+
+        /* DRAG AND DROP STYLES */
+        .sort-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .sort-item {
+            background: #eee;
+            padding: 10px 20px;
+            border: 2px solid #2c3e50;
+            border-radius: 5px;
+            cursor: grab;
+            width: 200px;
+            user-select: none;
+        }
+
+        .sort-item.dragging {
+            opacity: 0.5;
+        }
+
+        .feedback {
+            font-weight: bold;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .correct { color: #27ae60; background: #e8f8f0; }
+        .wrong { color: #c0392b; background: #f9ebea; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-audio">
+        <!-- SOSTITUISCI IL LINK QUI SOTTO PER L'AUDIO -->
+        <source src="https://files.catbox.moe/v16vdq.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- INTRODUZIONE -->
+    <div id="intro" class="scene active">
+        <h1>Il direttore è scomparso</h1>
+        <div class="image-placeholder">
+            <!-- 1. IMMAGINE COPERTINA: Sostituisci l'URL tra le virgolette di src -->
+            <img src="https://files.catbox.moe/iiid35.png" alt="Copertina">
+        </div>
+        <p>Benvenuto, giovane detective! Il Maestro Cavalcanti è sparito a pochi minuti dall'inizio del concerto di Gala. L'intero teatro è nel panico e solo tu puoi ritrovarlo prima che il sipario si alzi.</p>
+        
+        <button onclick="startAudio()">Avvia Audio</button>
+        <br><br>
+        <button onclick="nextScene('cap1')">Inizia l'Indagine</button>
+    </div>
+
+    <!-- CAPITOLO 1 -->
+    <div id="cap1" class="scene">
+        <h1>Capitolo 1: Il Camerino Sottosopra</h1>
+        <div class="image-placeholder">
+            <!-- 2. IMMAGINE CAPITOLO 1: Sostituisci l'URL qui sotto -->
+            <img src="https://files.catbox.moe/3ybn7q.png" alt="Il Camerino">
+        </div>
+        <p>Entri nel camerino del Maestro e trovi uno spartito strappato sul pavimento. C'è un odore strano, come di colofonia per archi e caffè freddo. Prima di proseguire, devi identificare un elemento fondamentale dell'orchestra.</p>
+        
+        <div class="quiz">
+            <p><strong>Quiz:</strong> Quale di questi strumenti NON appartiene alla famiglia dei legni?</p>
+            <button onclick="checkMultipleChoice('cap1', 'Oboe', false)">Oboe</button>
+            <button onclick="checkMultipleChoice('cap1', 'Flauto Traverso', false)">Flauto Traverso</button>
+            <button onclick="checkMultipleChoice('cap1', 'Tromba', true)">Tromba</button>
+            <button onclick="checkMultipleChoice('cap1', 'Clarinetto', false)">Clarinetto</button>
+        </div>
+        <div id="feedback-cap1" class="feedback"></div>
+    </div>
+
+    <!-- CAPITOLO 2 -->
+    <div id="cap2" class="scene">
+        <h1>Capitolo 2: Ombre dietro le quinte</h1>
+        <div class="image-placeholder">
+            <!-- 3. IMMAGINE CAPITOLO 2: Sostituisci l'URL qui sotto -->
+            <img src="https://files.catbox.moe/r4njdh.png" alt="Dietro le quinte">
+        </div>
+        <p>Ti sposti verso il retropalco. Noti un uomo sospettoso che nasconde un astuccio rigido. Sulla porta c'è un codice musicale da decifrare per aprirla.</p>
+
+        <div class="quiz">
+            <p><strong>Quiz:</strong> Come si chiama lo strumento a corde più grande e dal suono più grave dell'orchestra?</p>
+            <input type="text" id="input-cap2" placeholder="Scrivi qui...">
+            <br>
+            <button onclick="checkTextInput('cap2', 'contrabbasso')">Verifica</button>
+        </div>
+        <div id="feedback-cap2" class="feedback"></div>
+    </div>
+
+    <!-- CAPITOLO 3 -->
+    <div id="cap3" class="scene">
+        <h1>Capitolo 3: Tra i leggii</h1>
+        <div class="image-placeholder">
+            <!-- 4. IMMAGINE CAPITOLO 3: Sostituisci l'URL qui sotto -->
+            <img src="https://files.catbox.moe/3wbeo2.png" alt="Orchestra">
+        </div>
+        <p>Scendi nella fossa dell'orchestra. Metti in ordine questi strumenti dal più acuto (alto) al più grave (basso) per passare.</p>
+
+        <div class="quiz">
+            <div class="sort-container" id="sort-list">
+                <div class="sort-item" draggable="true" data-id="3">Violoncello</div>
+                <div class="sort-item" draggable="true" data-id="1">Violino</div>
+                <div class="sort-item" draggable="true" data-id="2">Viola</div>
+            </div>
+            <button onclick="checkSortQuiz('cap3')">Conferma Ordine</button>
+        </div>
+        <div id="feedback-cap3" class="feedback"></div>
+    </div>
+
+    <!-- CAPITOLO 4 -->
+    <div id="cap4" class="scene">
+        <h1>Capitolo 4: Note nel buio</h1>
+        <div class="image-placeholder">
+            <!-- 5. IMMAGINE CAPITOLO 4: Sostituisci l'URL qui sotto -->
+            <img src="https://files.catbox.moe/uofox4.png" alt="Sotterraneo">
+        </div>
+        <p>Raggiungi i sotterranei e trovi il Maestro legato a una sedia! Devi distrarlo rispondendo correttamente a un'ultima domanda tecnica.</p>
+
+        <div class="quiz">
+            <p><strong>Quiz:</strong> Quale strumento produce il suono tramite la vibrazione di una doppia ancia?</p>
+            <button onclick="checkMultipleChoice('cap4', 'Flauto', false)">Flauto</button>
+            <button onclick="checkMultipleChoice('cap4', 'Fagotto', true)">Fagotto</button>
+            <button onclick="checkMultipleChoice('cap4', 'Trombone', false)">Trombone</button>
+        </div>
+        <div id="feedback-cap4" class="feedback"></div>
+    </div>
+
+    <!-- FINALI -->
+    <div id="final-loss" class="scene">
+        <h1>Fine del Gioco: Sipario Chiuso</h1>
+        <div class="image-placeholder">
+            <img src="https://files.catbox.moe/aq6mtp.png" alt="Sconfitta">
+        </div>
+        <p>Hai commesso un errore e il mistero è rimasto irrisolto. Riprova!</p>
+        <button onclick="restartGame()">Ricomincia</button>
+    </div>
+
+    <div id="final-win-normal" class="scene">
+        <h1>Successo! Il concerto può iniziare</h1>
+        <div class="image-placeholder">
+            <img src="https://files.catbox.moe/eu5lr4.png">
+        </div>
+        <p>Hai liberato il Maestro Cavalcanti! Il concerto è stato un successo strepitoso.</p>
+        <button onclick="restartGame()">Gioca Ancora</button>
+    </div>
+</div>
+
+<script>
+    function startAudio() {
+        const audio = document.getElementById('bg-audio');
+        audio.play().catch(e => console.log("Audio bloccato."));
+    }
+
+    function nextScene(sceneId) {
+        document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+        document.getElementById(sceneId).classList.add('active');
+    }
+
+    function checkMultipleChoice(cap, answer, isCorrect) {
+        const feedback = document.getElementById(`feedback-${cap}`);
+        if (isCorrect) {
+            feedback.innerHTML = "Esatto!";
+            feedback.className = "feedback correct";
+            setTimeout(() => {
+                if(cap === 'cap1') nextScene('cap2');
+                if(cap === 'cap4') nextScene('final-win-normal');
+            }, 1000);
+        } else {
+            feedback.innerHTML = "Sbagliato!";
+            feedback.className = "feedback wrong";
+            setTimeout(() => nextScene('final-loss'), 1000);
+        }
+    }
+
+    function checkTextInput(cap, correctAnswer) {
+        const input = document.getElementById(`input-${cap}`).value.toLowerCase().trim();
+        const feedback = document.getElementById(`feedback-${cap}`);
+        if (input === correctAnswer) {
+            feedback.innerHTML = "Corretto!";
+            feedback.className = "feedback correct";
+            setTimeout(() => nextScene('cap3'), 1000);
+        } else {
+            feedback.innerHTML = "Sbagliato!";
+            feedback.className = "feedback wrong";
+            setTimeout(() => nextScene('final-loss'), 1000);
+        }
+    }
+
+    // Logica Drag & Drop
+    const sortList = document.getElementById('sort-list');
+    let draggedItem = null;
+
+    sortList.addEventListener('dragstart', (e) => { draggedItem = e.target; e.target.classList.add('dragging'); });
+    sortList.addEventListener('dragend', (e) => { e.target.classList.remove('dragging'); });
+    sortList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const afterElement = [...sortList.querySelectorAll('.sort-item:not(.dragging)')].reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = e.clientY - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+            else return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+        if (afterElement == null) sortList.appendChild(draggedItem);
+        else sortList.insertBefore(draggedItem, afterElement);
+    });
+
+    function checkSortQuiz(cap) {
+        const order = [...document.querySelectorAll('.sort-item')].map(item => item.getAttribute('data-id')).join('');
+        const feedback = document.getElementById(`feedback-${cap}`);
+        if (order === '123') {
+            feedback.innerHTML = "Perfetto!";
+            feedback.className = "feedback correct";
+            setTimeout(() => nextScene('cap4'), 1000);
+        } else {
+            feedback.innerHTML = "Sbagliato!";
+            feedback.className = "feedback wrong";
+            setTimeout(() => nextScene('final-loss'), 1000);
+        }
+    }
+
+    function restartGame() {
+        document.getElementById('input-cap2').value = "";
+        document.querySelectorAll('.feedback').forEach(f => f.innerHTML = "");
+        nextScene('intro');
+    }
+</script>
+</body>
+</html>

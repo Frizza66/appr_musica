@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barocco in Armonia: Viaggio nella Musica e nell'Arte del Seicento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .text-shadow-custom {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .section-header {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #4b5563;
+            border-bottom: 2px solid #9ca3af;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            transition: color 0.3s, background-color 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffffff;
+            background-color: #6b7280;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header & Navigation -->
+    <header class="bg-gray-800 text-white shadow-lg fixed w-full top-0 z-50">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold">Barocco in Armonia</a>
+            <nav id="nav-menu" class="hidden md:flex space-x-4">
+                <a href="#home" class="nav-link p-2 rounded-lg">Home</a>
+                <a href="#storia" class="nav-link p-2 rounded-lg">Storia & Società</a>
+                <a href="#musica" class="nav-link p-2 rounded-lg">Musica Barocca</a>
+                <a href="#protagonisti" class="nav-link p-2 rounded-lg">I Protagonisti</a>
+                <a href="#arte" class="nav-link p-2 rounded-lg">Arte & Architettura</a>
+                <a href="#galleria" class="nav-link p-2 rounded-lg">Galleria</a>
+                <a href="#risorse" class="nav-link p-2 rounded-lg">Risorse Esterne</a>
+            </nav>
+            <button id="menu-btn" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="bg-gray-800 text-white p-4 hidden fixed w-full top-16 z-40 md:hidden">
+        <nav class="flex flex-col space-y-2">
+            <a href="#home" class="nav-link p-2 rounded-lg">Home</a>
+            <a href="#storia" class="nav-link p-2 rounded-lg">Storia & Società</a>
+            <a href="#musica" class="nav-link p-2 rounded-lg">Musica Barocca</a>
+            <a href="#protagonisti" class="nav-link p-2 rounded-lg">I Protagonisti</a>
+            <a href="#arte" class="nav-link p-2 rounded-lg">Arte & Architettura</a>
+            <a href="#galleria" class="nav-link p-2 rounded-lg">Galleria</a>
+            <a href="#risorse" class="nav-link p-2 rounded-lg">Risorse Esterne</a>
+        </nav>
+    </div>
+
+    <main class="pt-24 pb-8 container mx-auto px-4">
+        
+        <!-- Home Section -->
+        <section id="home" class="mb-16">
+            <div class="relative bg-gray-200 rounded-xl overflow-hidden shadow-xl" style="height: 500px;">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://placehold.co/1200x500/A08A4E/fff?text=Barocco+in+Armonia');"></div>
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white p-8">
+                    <h1 class="text-5xl font-extrabold text-center mb-4 text-shadow-custom">Benvenuti nel magnifico mondo del Barocco!</h1>
+                    <p class="text-lg md:text-xl text-center max-w-2xl text-shadow-custom">
+                        Un'avventura sonora e visiva alla scoperta del Seicento, un'epoca di grandi cambiamenti, dove la musica, l'arte e la scienza si intrecciano in un'esplosione di creatività e genio.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Storia & Società Section -->
+        <section id="storia" class="mb-16">
+            <h2 class="section-header">Storia & Società</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">Il Contesto Storico</h3>
+                    <p class="text-gray-600">
+                        Il Barocco si sviluppa in un'epoca di profonde trasformazioni. La Controriforma, la nascita delle grandi monarchie assolute (come quella di Luigi XIV in Francia) e le rivoluzionarie scoperte scientifiche di Galileo Galilei e Newton, creano un mondo di forti contrasti e drammaticità, che si riflette pienamente nell'arte e nella musica.
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">La Vita a Corte</h3>
+                    <p class="text-gray-600">
+                        Le corti europee sono il cuore pulsante del Barocco. I musicisti, come Bach e Händel, lavoravano spesso al servizio di principi e nobili, e la musica non era solo arte, ma anche uno strumento di potere per mostrare la ricchezza e la magnificenza della corte.
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">La Controriforma</h3>
+                    <p class="text-gray-600">
+                        La Chiesa cattolica utilizzò l'arte e la musica barocca per riaffermare il proprio potere dopo la Riforma protestante. Le chiese divennero grandiose e ricche di decorazioni, e la musica sacra si fece più imponente e coinvolgente per emozionare i fedeli.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Musica Barocca Section -->
+        <section id="musica" class="mb-16">
+            <h2 class="section-header">La Musica Barocca</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">Le Caratteristiche</h3>
+                    <ul class="list-disc pl-5 text-gray-600 space-y-1">
+                        <li>**Basso Continuo:** La "spina dorsale" della musica, una linea di basso costante.</li>
+                        <li>**Concetto di Affetto:** La musica che esprime una singola e forte emozione.</li>
+                        <li>**Contrasto:** Forte e piano che si alternano improvvisamente (terrazze sonore).</li>
+                    </ul>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">I Nuovi Generi</h3>
+                    <ul class="list-disc pl-5 text-gray-600 space-y-1">
+                        <li>**L'Opera:** Nasce con Claudio Monteverdi, unione di musica e teatro.</li>
+                        <li>**Il Concerto:** Si divide in "concerto grosso" (con più solisti) e "concerto solista" (con un solo strumento protagonista).</li>
+                        <li>**La Fuga:** Un brano complesso in cui un tema viene ripetuto e "inseguito" da altre voci.</li>
+                    </ul>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">Gli Strumenti</h3>
+                    <p class="text-gray-600">
+                        Gli strumenti tipici del Barocco sono il clavicembalo, l'organo, il liuto, e le viole da gamba. Il violino raggiunge un'importanza incredibile, diventando lo strumento principe del periodo.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- I Protagonisti Section -->
+        <section id="protagonisti" class="mb-16">
+            <h2 class="section-header">I Protagonisti</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Antonio Vivaldi</h3>
+                    <img src="https://placehold.co/200x200/524784/fff?text=Vivaldi" alt="Ritratto di Antonio Vivaldi" class="rounded-full mx-auto mb-4">
+                    <p class="text-gray-600">Il "Prete Rosso" fu un virtuoso del violino e un genio del concerto. Le sue "Quattro Stagioni" sono il simbolo della musica barocca.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Johann Sebastian Bach</h3>
+                    <img src="https://placehold.co/200x200/404040/fff?text=Bach" alt="Ritratto di Johann Sebastian Bach" class="rounded-full mx-auto mb-4">
+                    <p class="text-gray-600">Maestro della polifonia e della fuga, Bach ha creato opere di una complessità e bellezza uniche, un vero pilastro della musica classica.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Georg Friedrich Händel</h3>
+                    <img src="https://placehold.co/200x200/77507B/fff?text=Handel" alt="Ritratto di Georg Friedrich Händel" class="rounded-full mx-auto mb-4">
+                    <p class="text-gray-600">Un compositore tedesco che trovò fama in Inghilterra. È famoso per i suoi oratori maestosi, come il celeberrimo "Messiah".</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Claudio Monteverdi</h3>
+                    <img src="https://placehold.co/200x200/98734A/fff?text=Monteverdi" alt="Ritratto di Claudio Monteverdi" class="rounded-full mx-auto mb-4">
+                    <p class="text-gray-600">Considerato il padre dell'opera, fu il primo a combinare musica e dramma in un modo nuovo e rivoluzionario per l'epoca.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Arte & Architettura Section -->
+        <section id="arte" class="mb-16">
+            <h2 class="section-header">Arte & Architettura</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">L'Arte in Movimento</h3>
+                    <p class="text-gray-600">
+                        La pittura e la scultura barocca sono caratterizzate dal movimento, dalla teatralità e dal forte uso del chiaroscuro, ovvero del contrasto tra luce e ombra. Artisti come il Caravaggio e Gian Lorenzo Bernini cercavano di suscitare emozioni intense nell'osservatore.
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">Architettura Spettacolare</h3>
+                    <p class="text-gray-600">
+                        Le chiese e i palazzi barocchi sono sfarzosi e maestosi, con grandi cupole, colonne tortili e decorazioni esuberanti. L'obiettivo era creare spazi che ispirassero meraviglia e stupore, come la famosa Basilica di San Pietro o la Reggia di Versailles.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galleria Multimediale Section -->
+        <section id="galleria" class="mb-16">
+            <h2 class="section-header">Galleria Multimediale</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <img src="https://placehold.co/600x400/C4B08A/fff?text=Apollo+e+Dafne" alt="Scultura di Gian Lorenzo Bernini" class="gallery-image">
+                    <p class="text-center mt-2 text-gray-600">Scultura "Apollo e Dafne" di Gian Lorenzo Bernini.</p>
+                </div>
+                <div>
+                    <img src="https://placehold.co/600x400/92B4B2/fff?text=I+musicisti" alt="Dipinto di Caravaggio" class="gallery-image">
+                    <p class="text-center mt-2 text-gray-600">Dipinto "I Musici" di Caravaggio.</p>
+                </div>
+                <div>
+                    <img src="https://placehold.co/600x400/B8B8B8/fff?text=Salone+delle+feste" alt="Interni della Reggia di Versailles" class="gallery-image">
+                    <p class="text-center mt-2 text-gray-600">Interno sfarzoso di una reggia barocca.</p>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">Ascolti e Video</h3>
+                <p class="text-gray-600 mb-4">
+                    Immergiti nella musica barocca con questi video:
+                </p>
+                <ul class="space-y-4">
+                    <li>
+                        <a href="https://www.youtube.com/watch?v=GRxofEmo3IE" target="_blank" class="text-blue-500 hover:underline">
+                            Le Quattro Stagioni di Vivaldi - "La Primavera"
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/watch?v=GRxofEmo3IE" target="_blank" class="text-blue-500 hover:underline">
+                            Toccata e Fuga in Re minore di Bach
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/watch?v=76R19f5D9Fk" target="_blank" class="text-blue-500 hover:underline">
+                            Coro "Hallelujah" dal Messiah di Händel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Risorse Esterne Section -->
+        <section id="risorse" class="mb-16">
+            <h2 class="section-header">Risorse Esterne per Approfondire</h2>
+            <div class="card p-6">
+                <ul class="list-disc pl-5 space-y-4">
+                    <li>
+                        <a href="https://www.britannica.com/art/Baroque-art-and-architecture" target="_blank" class="text-blue-500 hover:underline">
+                            Enciclopedia Britannica - Articolo sul Barocco
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.raiplay.it/programmi/raistoria" target="_blank" class="text-blue-500 hover:underline">
+                            RAI Storia - Documentari sulla storia e l'arte
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.metmuseum.org/toah/hd/baro/hd_baro.htm" target="_blank" class="text-blue-500 hover:underline">
+                            The Metropolitan Museum of Art - Galleria online sul Barocco
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center p-4 mt-8">
+        <p>&copy; 2024 Barocco in Armonia. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelectorAll('#mobile-menu a, #nav-menu a');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
